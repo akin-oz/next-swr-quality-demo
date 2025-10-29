@@ -1,10 +1,16 @@
 # React FE Quality Starter
 
-Prove habits, not size. Tiny, production‑like, testable.
+A small Next.js app that shows how to fetch data with safety and confidence. Cached responses return fast, background refresh keeps data fresh, and every error path is typed and tested. Clean domain boundaries, accessible UI states, and quality gates in CI.
 
-## TL;DR (Signals)
+## What this proves 
+- Contract-first data discipline: every API response is validated at the edge (Zod) and mapped into a single error shape (AppError) before it touches the UI.
+- Predictable flow: domain boundary hides transport and caching; UI renders from a simple useQuery state machine (loading | success | empty | error).
+- Pragmatic UX discipline: accessible errors (role=alert + focus), background revalidation for snappy reads, and TTL cache to avoid thrash.
+- Quality gates you can trust: ESLint, typecheck, unit + E2E tests in CI, and Lighthouse budgets for perf/a11y/best-practices.
 
-- Next.js 16 + React 19 + TypeScript (Node 20)
+## TL;DR
+
+- Next.js 16 + React 19 + TypeScript (Node 22)
 - Contracts at the edge (Zod), one error shape (AppError)
 - Cache with TTL + SWR‑style revalidation (tiny `useQuery`)
 - Tests: Vitest (unit), Playwright (e2e), MSW (mocks)
@@ -26,6 +32,21 @@ npx playwright install # first time only
 npm run test:e2e       # run e2e against dev server
 npm run lhci           # Lighthouse CI (requires a build + static serve)
 ```
+
+## Commands
+- dev: start Next.js in dev mode (port 3000)
+- build: production build of the app
+- start: start the built app
+- lint: ESLint (Next core-web-vitals rules)
+- typecheck: TypeScript project check
+- format: Prettier write
+- format:check: Prettier check only
+- test:unit: Vitest unit tests (jsdom, MSW)
+- test:e2e: Playwright tests
+- storybook: Storybook dev server (port 6006)
+- build-storybook: static Storybook build
+- lhci: Lighthouse CI run (uses lighthouserc.json budgets)
+- check: lint + typecheck + format:check + unit tests
 
 ## Architecture (Boundaries)
 
@@ -75,7 +96,7 @@ Budgets (targets): Performance ≥ 85, Accessibility ≥ 90, Best Practices ≥ 
 - Command: `npm run storybook`
 - Example: `src/components/Alert.stories.tsx` covers error/warning/info/success.
 
-## Folder Map (scan‑friendly)
+## Folder Map
 
 - `src/lib/models.ts` — Zod schemas, `AppError`
 - `src/lib/http.ts` — fetch wrapper + normalization
@@ -85,13 +106,22 @@ Budgets (targets): Performance ≥ 85, Accessibility ≥ 90, Best Practices ≥ 
 - `src/components/Alert.tsx` — accessible error surface
 - `tests/**` — unit and setup; `tests/e2e/**` — Playwright
 
-## Design Trade‑offs (concise)
+## Trade‑offs and what we intentionally skipped
 
 - Validate at edges for safety over micro‑perf
 - Tiny utilities > heavy libs for clarity
 - In‑memory cache for testability over persistence
-- Route‑mocked e2e for speed; integration is out‑of‑scope
+- Route‑mocked E2E for speed; full backend integration tests are out of scope
 - A11y baked into failure UI from day 1
+
+Intentionally out of scope (to stay focused on the quality signals):
+- No global state management (Redux/Zustand/RTK Query). Local state + small cache are enough here.
+- No endpoint auth/security hardening. Mocked/demo API only; add auth, CSRF, rate‑limits in a real app.
+- No bundle size tuning or production profiling. The goal is correctness + discipline, not bytes.
+- No server/shared cache (Redis/CDN) or persistence layer. Only an in‑memory TTL for clarity.
+- No mutations (create/update/delete) or optimistic UI; only read/query flows.
+- No error reporting/observability wiring (Sentry/OpenTelemetry). Add when productized.
+- No internationalization (i18n) or localization.
 
 ## Keywords
 

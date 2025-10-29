@@ -143,4 +143,21 @@ describe("useQuery", () => {
     const cachedExpiry = (getCached('ttl:test') && Date.now() <= expiry);
     expect(cachedExpiry).toBe(true);
   });
+
+  it('respects TTL override when provided via options object', async () => {
+    const now = Date.now();
+    vi.spyOn(Date, 'now').mockReturnValue(now);
+
+    const fetcher = vi.fn(async () => ({ id: 42 }));
+    const { result } = renderHook(() => useQuery('ttl:opts', fetcher, { ttl: 5 }));
+
+    await act(async () => await flush());
+
+    expect(result.current.status).toBe('success');
+    expect(result.current.data).toEqual({ id: 42 });
+
+    // Advance time past the small TTL and ensure cache evicts
+    vi.spyOn(Date, 'now').mockReturnValue(now + 10);
+    expect(getCached('ttl:opts')).toBeNull();
+  });
 });

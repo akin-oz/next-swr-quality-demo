@@ -5,6 +5,7 @@ import Alert from '@/components/Alert';
 import { useQuery } from '@/hooks/useQuery';
 import { listItems } from '@/domain/items';
 import type { Item } from '@/lib/models';
+import { toUserError } from '@/lib/error-message';
 
 export default function HomePage() {
   const { data, status, error } = useQuery<Item[]>(
@@ -12,15 +13,17 @@ export default function HomePage() {
     () => listItems(),
   );
 
+  const userErr = status === 'error' ? toUserError(error) : null;
+
   return (
     <main className="mx-auto max-w-2xl p-6 space-y-4">
       <h1 className="text-2xl font-semibold">Items</h1>
 
       {status === 'loading' && <p>Loading…</p>}
 
-      {status === 'error' && (
-        <Alert title="Failed to load">
-          {error instanceof Error ? error.message : 'Unknown error'}
+      {status === 'error' && userErr && (
+        <Alert title={userErr.title} severity={userErr.severity}>
+          {userErr.description}
         </Alert>
       )}
 

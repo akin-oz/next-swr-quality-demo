@@ -46,6 +46,6 @@ describe("HomePage UI states", () => {
     const alert = await screen.findByRole("alert");
     expect(alert).toBeInTheDocument();
     // Copy path: component shows generic if error is not instance of Error
-    expect(alert).toHaveTextContent(/Failed to load/i);
+    expect(alert).toHaveTextContent(/The server encountered an error. Please try again later./i);
   });
 });
