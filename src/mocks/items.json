@@ -1,0 +1,5 @@
+[
+  { "id": 1, "title": "First Item", "completed": false },
+  { "id": 2, "title": "Second Item", "completed": true }
+]
+
