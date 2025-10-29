@@ -6,22 +6,48 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test:unit": "vitest run --reporter=default",
+    "test:e2e": "playwright test",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "lhci": "lhci autorun",
+    "check": "npm run lint && npm run typecheck && npm run format:check && npm run test:unit"
   },
   "dependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "next": "16.0.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "next": "16.0.0"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "babel-plugin-react-compiler": "1.0.0",
-    "typescript": "^5",
+    "@lhci/cli": "^0.14.0",
+    "@playwright/test": "^1.49.0",
+    "@storybook/addon-a11y": "^8.6.14",
+    "@storybook/addon-essentials": "^8.6.14",
+    "@storybook/react-vite": "^8.6.14",
+    "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
+    "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
-    "eslint-config-next": "16.0.0"
+    "eslint-config-next": "16.0.0",
+    "jsdom": "^24.1.0",
+    "msw": "^2.3.1",
+    "prettier": "^3.3.3",
+    "storybook": "^8.6.14",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vite": "^5.4.8",
+    "vite-tsconfig-paths": "^5.1.0",
+    "vitest": "^2.0.0"
   }
 }
