@@ -1,6 +1,6 @@
-import { z } from 'zod';
-import { createAppError, isAppError } from './models';
-import { logger } from './logger';
+import { z } from "zod";
+import { createAppError, isAppError } from "./models";
+import { logger } from "./logger";
 
 type Options<T> = {
   method?: string;
@@ -10,31 +10,33 @@ type Options<T> = {
   schema?: z.ZodType<T>;
 };
 
-const JSON_CT = 'application/json';
+const JSON_CT = "application/json";
 
 function wantsJson(res: Response) {
-  return (res.headers.get('content-type') ?? '').includes(JSON_CT);
+  return (res.headers.get("content-type") ?? "").includes(JSON_CT);
 }
 
 function ensureContentType(
   headers: Record<string, string>,
-  body: unknown
+  body: unknown,
 ): Record<string, string> {
   if (body === undefined) return headers;
-  const hasCT = Object.keys(headers).some((k) => k.toLowerCase() === 'content-type');
-  return hasCT ? headers : { ...headers, 'content-type': JSON_CT };
+  const hasCT = Object.keys(headers).some(
+    (k) => k.toLowerCase() === "content-type",
+  );
+  return hasCT ? headers : { ...headers, "content-type": JSON_CT };
 }
 
 function toBody(body: unknown): BodyInit | undefined {
   if (body === undefined) return undefined;
-  return typeof body === 'string' ? body : JSON.stringify(body);
+  return typeof body === "string" ? body : JSON.stringify(body);
 }
 
 async function readJson(res: Response) {
   try {
     return await res.json();
   } catch (e) {
-    throw createAppError('parse', 'Invalid JSON response', { cause: e });
+    throw createAppError("parse", "Invalid JSON response", { cause: e });
   }
 }
 
@@ -43,60 +45,71 @@ async function readMessage(res: Response, fallback: string) {
     try {
       const body = await res.json();
       if (
-        typeof body === 'object' &&
+        typeof body === "object" &&
         body !== null &&
-        'message' in body &&
-        typeof (body as Record<string, unknown>).message === 'string'
+        "message" in body &&
+        typeof (body as Record<string, unknown>).message === "string"
       ) {
         return String(body.message);
       }
     } catch (e) {
-      logger.debug('[http] Failed to read JSON error body', { cause: e });
+      logger.debug("[http] Failed to read JSON error body", { cause: e });
     }
   }
   try {
     const text = await res.text();
     return text || fallback;
   } catch (e) {
-    logger.debug('[http] Failed to read text error body', { cause: e });
+    logger.debug("[http] Failed to read text error body", { cause: e });
     return fallback;
   }
 }
 
 async function throwForHttpError(res: Response): Promise<void> {
   if (res.ok) return;
-  const msg = await readMessage(res, `Request failed with status ${res.status}`);
-  throw createAppError('http', msg, { status: res.status });
+  const msg = await readMessage(
+    res,
+    `Request failed with status ${res.status}`,
+  );
+  throw createAppError("http", msg, { status: res.status });
 }
 
 async function resolveNonJson<T>(res: Response): Promise<T | undefined> {
   const text = await res.text();
   if (!text.trim()) return undefined as unknown as T;
-  throw createAppError('parse', 'Expected JSON but got another content type');
+  throw createAppError("parse", "Expected JSON but got another content type");
 }
 
 function validate<T>(data: unknown, schema?: z.ZodType<T>): T {
   if (!schema) return data as T;
   const r = schema.safeParse(data);
   if (r.success) return r.data;
-  throw createAppError('validation', r.error.message);
+  throw createAppError("validation", r.error.message);
 }
 
 function mapCaught(err: unknown): never {
-  if (err instanceof DOMException && err.name === 'AbortError') {
-    throw createAppError('aborted', 'Request aborted', { cause: err });
+  if (err instanceof DOMException && err.name === "AbortError") {
+    throw createAppError("aborted", "Request aborted", { cause: err });
   }
   if (isAppError(err)) throw err;
-  throw createAppError('network', 'Network error', { cause: err });
+  throw createAppError("network", "Network error", { cause: err });
 }
 
-export async function http<T = unknown>(url: string, opts: Options<T> = {}): Promise<T> {
+export async function http<T = unknown>(
+  url: string,
+  opts: Options<T> = {},
+): Promise<T> {
   const controller = new AbortController();
   const signal = opts.signal ?? controller.signal;
-  const method = opts.method ?? (opts.body ? 'POST' : 'GET');
+  const method = opts.method ?? (opts.body ? "POST" : "GET");
   const headers = ensureContentType({ ...(opts.headers ?? {}) }, opts.body);
 
-  const init: RequestInit = { method, headers, signal, body: toBody(opts.body) };
+  const init: RequestInit = {
+    method,
+    headers,
+    signal,
+    body: toBody(opts.body),
+  };
 
   try {
     const res = await fetch(url, init);
