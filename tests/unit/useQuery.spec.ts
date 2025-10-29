@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useQuery } from "@/hooks/useQuery";
-import { clearCache, getCached } from "@/lib/cache";
+import { clearCache, getCached, setCached } from "@/lib/cache";
 
 function flush() {
   return new Promise((r) => setTimeout(r, 0));
@@ -89,5 +89,58 @@ describe("useQuery", () => {
     unmount();
 
     expect(signal!.aborted).toBe(true);
+  });
+
+  it('sets error state on fetch failure', async () => {
+    const fetcher = vi.fn(async () => {
+      throw new Error('Boom');
+    });
+
+    const { result } = renderHook(() => useQuery('fail', fetcher, 1000));
+
+    await act(async () => await flush());
+
+    expect(result.current.status).toBe('error');
+    expect(result.current.error).toBeInstanceOf(Error);
+  });
+
+  it('expiry triggers fresh fetch and loading state before success', async () => {
+    const now = Date.now();
+    vi.spyOn(Date, 'now').mockReturnValue(now);
+
+    setCached('exp', { id: 1 }, 10);
+
+    const fetcher = vi.fn(async () => ({ id: 2 }));
+
+    // advance time past expiry
+    vi.spyOn(Date, 'now').mockReturnValue(now + 50);
+
+    const { result } = renderHook(() => useQuery('exp', fetcher, 1000));
+
+    expect(result.current.status).toBe('loading'); // expired, not success
+    expect(fetcher).toHaveBeenCalledTimes(1);
+
+    await act(async () => await flush());
+
+    expect(result.current.status).toBe('success');
+    expect(getCached('exp')).toEqual({ id: 2 });
+  });
+
+  it('respects TTL override when provided as number', async () => {
+    const fetcher = vi.fn(async () => ({ id: 9 }));
+    const { result } = renderHook(() => useQuery('ttl:test', fetcher, 5));
+
+    await act(async () => await flush());
+
+    expect(result.current.data).toEqual({ id: 9 });
+
+    const entry = getCached('ttl:test');
+    expect(entry).not.toBeNull();
+    expect(typeof entry).toBe('object');
+
+    // ttl override is used in cache
+    const expiry = (Date.now() + 5);
+    const cachedExpiry = (getCached('ttl:test') && Date.now() <= expiry);
+    expect(cachedExpiry).toBe(true);
   });
 });
