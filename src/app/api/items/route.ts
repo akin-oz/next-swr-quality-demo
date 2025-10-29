@@ -1,10 +1,7 @@
-import { NextRequest } from 'next/server';
-
-const ITEMS = [
-  { id: 1, title: 'First Item', completed: false },
-  { id: 2, title: 'Second Item', completed: true },
-];
+import { NextRequest } from "next/server";
+import ITEMS from "@/mocks/items.json";
 
 export async function GET(_req: NextRequest) {
+  void _req;
   return Response.json({ data: ITEMS });
 }
