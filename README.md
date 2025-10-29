@@ -4,7 +4,8 @@
 
 A small Next.js app that shows how to fetch data with safety and confidence. Cached responses return fast, background refresh keeps data fresh, and every error path is typed and tested. Clean domain boundaries, accessible UI states, and quality gates in CI.
 
-## What this proves 
+## What this proves
+
 - Contract-first data discipline: every API response is validated at the edge (Zod) and mapped into a single error shape (AppError) before it touches the UI.
 - Predictable flow: domain boundary hides transport and caching; UI renders from a simple useQuery state machine (loading | success | empty | error).
 - Pragmatic UX discipline: accessible errors (role=alert + focus), background revalidation for snappy reads, and TTL cache to avoid thrash.
@@ -36,6 +37,7 @@ npm run lhci           # Lighthouse CI (requires a build + static serve)
 ```
 
 ## Commands
+
 - dev: start Next.js in dev mode (port 3000)
 - build: production build of the app
 - start: start the built app
@@ -117,6 +119,7 @@ Budgets (targets): Performance ≥ 85, Accessibility ≥ 90, Best Practices ≥ 
 - A11y baked into failure UI from day 1
 
 Intentionally out of scope (to stay focused on the quality signals):
+
 - No global state management (Redux/Zustand/RTK Query). Local state + small cache are enough here.
 - No endpoint auth/security hardening. Mocked/demo API only; add auth, CSRF, rate‑limits in a real app.
 - No bundle size tuning or production profiling. The goal is correctness + discipline, not bytes.

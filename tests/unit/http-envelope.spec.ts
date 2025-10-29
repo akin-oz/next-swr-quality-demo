@@ -28,7 +28,9 @@ describe("http() with ApiEnvelope", () => {
       }),
     );
 
-    await expect(http("/api/user2", { schema: UserEnvelope })).rejects.toMatchObject({
+    await expect(
+      http("/api/user2", { schema: UserEnvelope }),
+    ).rejects.toMatchObject({
       type: "validation",
     });
   });

@@ -1,9 +1,9 @@
-import { Item, ItemSchema } from '@/lib/models';
-import { http } from '@/lib/http';
-import { getCached, setCached } from '@/lib/cache';
-import { z } from 'zod';
+import { Item, ItemSchema } from "@/lib/models";
+import { http } from "@/lib/http";
+import { getCached, setCached } from "@/lib/cache";
+import { z } from "zod";
 
-const BASE = '/api/items';
+const BASE = "/api/items";
 
 async function fetchList(): Promise<Item[]> {
   const { data } = await http<{ data: Item[] }>(BASE, {
@@ -23,7 +23,7 @@ export async function getItems(
   ttlMs: number,
   revalidate = true,
 ): Promise<Item[]> {
-  const key = 'items:list';
+  const key = "items:list";
   const cached = getCached<Item[]>(key);
   if (cached) {
     if (revalidate) {

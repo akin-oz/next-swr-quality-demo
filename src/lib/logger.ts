@@ -1,8 +1,8 @@
 // ~/src/lib/logger.ts
-type Level = 'debug' | 'info' | 'warn' | 'error';
+type Level = "debug" | "info" | "warn" | "error";
 
 const defaultEnabled: Record<Level, boolean> = {
-  debug: process.env.NODE_ENV !== 'production',
+  debug: process.env.NODE_ENV !== "production",
   info: true,
   warn: true,
   error: true,
@@ -27,5 +27,5 @@ export const logger = Object.fromEntries(
     (...args: unknown[]) => {
       if (enabled[level]) consoleMap[level](...args);
     },
-  ])
+  ]),
 ) as Record<Level, (...args: unknown[]) => void>;

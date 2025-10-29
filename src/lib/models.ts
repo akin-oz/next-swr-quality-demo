@@ -1,19 +1,19 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 //
 // Error model
 //
 
 export const AppErrorType = {
-  Network: 'network',
-  Http: 'http',
-  Parse: 'parse',
-  Validation: 'validation',
-  Aborted: 'aborted',
-  Unknown: 'unknown',
+  Network: "network",
+  Http: "http",
+  Parse: "parse",
+  Validation: "validation",
+  Aborted: "aborted",
+  Unknown: "unknown",
 } as const;
 
-export type AppErrorType = typeof AppErrorType[keyof typeof AppErrorType];
+export type AppErrorType = (typeof AppErrorType)[keyof typeof AppErrorType];
 
 export type AppError = {
   type: AppErrorType;
@@ -36,11 +36,11 @@ export function createAppError(
 
 export function isAppError(e: unknown): e is AppError {
   return (
-    typeof e === 'object' &&
+    typeof e === "object" &&
     e !== null &&
-    'type' in e &&
-    'message' in e &&
-    typeof e.message === 'string'
+    "type" in e &&
+    "message" in e &&
+    typeof e.message === "string"
   );
 }
 

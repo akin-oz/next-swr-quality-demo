@@ -10,4 +10,3 @@ export const DEFAULT_TTL_MS = num(
   process.env.NEXT_PUBLIC_DEFAULT_TTL_MS,
   10_000,
 );
-

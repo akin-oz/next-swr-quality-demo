@@ -91,73 +91,75 @@ describe("useQuery", () => {
     expect(signal!.aborted).toBe(true);
   });
 
-  it('sets error state on fetch failure', async () => {
+  it("sets error state on fetch failure", async () => {
     const fetcher = vi.fn(async () => {
-      throw new Error('Boom');
+      throw new Error("Boom");
     });
 
-    const { result } = renderHook(() => useQuery('fail', fetcher, 1000));
+    const { result } = renderHook(() => useQuery("fail", fetcher, 1000));
 
     await act(async () => await flush());
 
-    expect(result.current.status).toBe('error');
+    expect(result.current.status).toBe("error");
     expect(result.current.error).toBeInstanceOf(Error);
   });
 
-  it('expiry triggers fresh fetch and loading state before success', async () => {
+  it("expiry triggers fresh fetch and loading state before success", async () => {
     const now = Date.now();
-    vi.spyOn(Date, 'now').mockReturnValue(now);
+    vi.spyOn(Date, "now").mockReturnValue(now);
 
-    setCached('exp', { id: 1 }, 10);
+    setCached("exp", { id: 1 }, 10);
 
     const fetcher = vi.fn(async () => ({ id: 2 }));
 
     // advance time past expiry
-    vi.spyOn(Date, 'now').mockReturnValue(now + 50);
+    vi.spyOn(Date, "now").mockReturnValue(now + 50);
 
-    const { result } = renderHook(() => useQuery('exp', fetcher, 1000));
+    const { result } = renderHook(() => useQuery("exp", fetcher, 1000));
 
-    expect(result.current.status).toBe('loading'); // expired, not success
+    expect(result.current.status).toBe("loading"); // expired, not success
     expect(fetcher).toHaveBeenCalledTimes(1);
 
     await act(async () => await flush());
 
-    expect(result.current.status).toBe('success');
-    expect(getCached('exp')).toEqual({ id: 2 });
+    expect(result.current.status).toBe("success");
+    expect(getCached("exp")).toEqual({ id: 2 });
   });
 
-  it('respects TTL override when provided as number', async () => {
+  it("respects TTL override when provided as number", async () => {
     const fetcher = vi.fn(async () => ({ id: 9 }));
-    const { result } = renderHook(() => useQuery('ttl:test', fetcher, 5));
+    const { result } = renderHook(() => useQuery("ttl:test", fetcher, 5));
 
     await act(async () => await flush());
 
     expect(result.current.data).toEqual({ id: 9 });
 
-    const entry = getCached('ttl:test');
+    const entry = getCached("ttl:test");
     expect(entry).not.toBeNull();
-    expect(typeof entry).toBe('object');
+    expect(typeof entry).toBe("object");
 
     // ttl override is used in cache
-    const expiry = (Date.now() + 5);
-    const cachedExpiry = (getCached('ttl:test') && Date.now() <= expiry);
+    const expiry = Date.now() + 5;
+    const cachedExpiry = getCached("ttl:test") && Date.now() <= expiry;
     expect(cachedExpiry).toBe(true);
   });
 
-  it('respects TTL override when provided via options object', async () => {
+  it("respects TTL override when provided via options object", async () => {
     const now = Date.now();
-    vi.spyOn(Date, 'now').mockReturnValue(now);
+    vi.spyOn(Date, "now").mockReturnValue(now);
 
     const fetcher = vi.fn(async () => ({ id: 42 }));
-    const { result } = renderHook(() => useQuery('ttl:opts', fetcher, { ttl: 5 }));
+    const { result } = renderHook(() =>
+      useQuery("ttl:opts", fetcher, { ttl: 5 }),
+    );
 
     await act(async () => await flush());
 
-    expect(result.current.status).toBe('success');
+    expect(result.current.status).toBe("success");
     expect(result.current.data).toEqual({ id: 42 });
 
     // Advance time past the small TTL and ensure cache evicts
-    vi.spyOn(Date, 'now').mockReturnValue(now + 10);
-    expect(getCached('ttl:opts')).toBeNull();
+    vi.spyOn(Date, "now").mockReturnValue(now + 10);
+    expect(getCached("ttl:opts")).toBeNull();
   });
 });

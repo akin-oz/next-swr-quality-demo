@@ -38,14 +38,12 @@ describe("ItemDetailPage UI states", () => {
     expect(alert).toHaveTextContent(/No item with id 999/i);
   });
 
-  it('shows generic error variant when server fails', async () => {
-    server.use(
-      mswHttp.get('/api/items/:id', () => HttpResponse.error())
-    );
+  it("shows generic error variant when server fails", async () => {
+    server.use(mswHttp.get("/api/items/:id", () => HttpResponse.error()));
 
-    renderWithParams('9999');
+    renderWithParams("9999");
 
-    const alert = await screen.findByRole('alert');
+    const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent(/Failed to load/i);
     expect(alert).not.toHaveTextContent(/Not Found/i);
   });
