@@ -17,6 +17,9 @@
     "lhci": "lhci autorun",
     "check": "npm run lint && npm run typecheck && npm run format:check && npm run test:unit"
   },
+  "engines": {
+    "node": "22.x"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",

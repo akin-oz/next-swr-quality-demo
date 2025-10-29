@@ -1,5 +1,7 @@
 # React FE Quality Starter
 
+[![Check](https://github.com/akin-oz/next-swr-quality-demo/actions/workflows/check.yml/badge.svg?branch=main)](https://github.com/akin-oz/next-swr-quality-demo/actions/workflows/check.yml?query=branch%3Amain) [![E2E](https://github.com/akin-oz/next-swr-quality-demo/actions/workflows/e2e.yml/badge.svg?branch=main)](https://github.com/akin-oz/next-swr-quality-demo/actions/workflows/e2e.yml?query=branch%3Amain) [![LHCI](https://github.com/akin-oz/next-swr-quality-demo/actions/workflows/lhci.yml/badge.svg?branch=main)](https://github.com/akin-oz/next-swr-quality-demo/actions/workflows/lhci.yml?query=branch%3Amain)
+
 A small Next.js app that shows how to fetch data with safety and confidence. Cached responses return fast, background refresh keeps data fresh, and every error path is typed and tested. Clean domain boundaries, accessible UI states, and quality gates in CI.
 
 ## What this proves 
