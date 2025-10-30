@@ -34,7 +34,7 @@ export function Alert({
   return (
     <div
       ref={elRef}
-      className={`rounded-md border p-3 ${severityStyles[severity]}`}
+      className={`rounded-md border p-3 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-600 focus-visible:ring-offset-zinc-900 ${severityStyles[severity]}`}
       role={role}
       aria-live={role === "alert" ? "assertive" : "polite"}
       tabIndex={shouldFocus ? -1 : undefined}

@@ -6,6 +6,12 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
+  if (id === "500") {
+    return new Response(JSON.stringify({ message: "Internal Server Error" }), {
+      status: 500,
+      headers: { "content-type": "application/json" },
+    });
+  }
   const numId = Number(id);
   const item = ITEMS.find((i) => i.id === numId);
 
