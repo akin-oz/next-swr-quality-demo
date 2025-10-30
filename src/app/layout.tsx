@@ -13,7 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "next-swr-quality-demo",
+  title: "React SWR Quality Demo",
+  description:
+    "A tiny Next.js app showing SWR caching, type-safe API contracts, and accessible error states.",
 };
 
 export default function RootLayout({
