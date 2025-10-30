@@ -6,6 +6,11 @@ Live demo: https://next-swr-quality-demo.vercel.app/
 
 A small Next.js app that shows how to fetch data with safety and confidence. Cached responses return fast, background refresh keeps data fresh, and every error path is typed and tested. Clean domain boundaries, accessible UI states, and quality gates in CI.
 
+### 15-Second Demo
+Shows SWR caching, data validation, and accessible error handling.
+On error, focus automatically moves to the alert (role="alert", aria-live="assertive").
+![Demo of SWR quality behavior](./docs/demo.gif)
+
 ## What this proves
 
 - Contract-first data discipline: every API response is validated at the edge (Zod) and mapped into a single error shape (AppError) before it touches the UI.
